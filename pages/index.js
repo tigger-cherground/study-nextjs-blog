@@ -1,27 +1,29 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react'
 import Layout, { siteTitle } from '../components/Layout';
-// import { getSortedPostsData } from '../lib/posts';
+import { getSortedPostsData } from '../lib/posts';
 import utilStyles from '../styles/utils.module.css';
-
-// export async function getStaticProps() {
-//   const allPostsData = getSortedPostsData();
-//   return {
-//     props: {
-//       allPostsData,
-//     },
-//   }
-// }
+import Link from 'next/link';
+import Date from '../components/Date';
 
 export async function getStaticProps() {
-  const response = await fetch('http://localhost:3000/api/posts')
-  const json = await response.json();
+  const allPostsData = getSortedPostsData();
   return {
     props: {
-      allPostsData: json.allPostsData,
+      allPostsData,
     },
   }
 }
+
+// export async function getServerSideProps() {
+//   const response = await fetch('http://localhost:3000/api/posts')
+//   const json = await response.json();
+//   return {
+//     props: {
+//       allPostsData: json.allPostsData,
+//     },
+//   }
+// }
 
 export default function Home({ allPostsData }) {
   // const [allPostsData, setAllPostsData] = useState([]);
@@ -49,11 +51,11 @@ export default function Home({ allPostsData }) {
         <ul className={utilStyles.list}>
           {allPostsData.map(({ id, date, title }) => (
             <li className={utilStyles.listItem} key={id}>
-              {title}
+              <Link href={`/posts/${id}`}>{title}</Link>
               <br />
-              {id}
-              <br />
-              {date}
+              <small className={utilStyles.lightText}>
+                <Date dateString={date} />
+              </small>
             </li>
           ))}
         </ul>
